@@ -19,8 +19,8 @@ void main()
 	
 	uint8_t check_sum;
 	
-	DataFCH.fccs3 = get_crc5(&DataFCH, 28, 0);
-	DataFCH.fccs4 = get_crc5(&DataFCH, 28, 1);
+	DataFCH.fccs3 = calculate_crc5(&DataFCH, LENGTH, 0);
+ 	DataFCH.fccs4 = calculate_crc5(&DataFCH, LENGTH, 1);
 	check_sum     = (uint8_t)DataFCH.fccs3 << 1 | (uint8_t)DataFCH.fccs4;
 	
 	printf("fccs3 = %x\n", DataFCH.fccs3);
@@ -28,5 +28,5 @@ void main()
 	printf("CRC5  = %x\n", check_sum);	
 	
 	
-	printf("Checker = %x\n", check_crc5(&DataFCH, 28, check_sum));
+	printf("Checker = %x\n", check_crc5(&DataFCH, LENGTH, check_sum));
 }

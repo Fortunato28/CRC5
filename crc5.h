@@ -2,7 +2,6 @@
 #define CRC5
 
 #include <stdint.h>
-#include <string.h>
 #include <stdbool.h>
 
 // FCH структура
@@ -24,30 +23,12 @@ typedef struct {
 #define POLY 0x5
 // Ќачальное состо€ние и итоговое инвертирование битов
 #define INIT_STATE 0x1f
+// CRC5 вычисл€етс€ всегда от этого количества бит
+#define LENGTH 28
 
-/**
-  * @brief  ¬ычисление crc5 по входным данным
-  * @param  input   -  указатель на входные данные
-  * @param  length  -  длина входных данных
-  * @retval crc_reg -  итоговое содержимое регистра, которое и €вл€етс€ значением crc5 
-  */
-uint8_t crc5(uint32_t input, size_t length);
-
-/**
-  * @brief  ¬ычисление и проверка crc5 по входным данным
-  * @param  input   -  указатель на входные данные
-  * @param  length  -  длина входных данных
-  * @param  crc5    -  полученное значение crc5 дл€ проверки
-  * @retval 0/1 	-  результат проверки, совпало/не совпало
-  */
-bool check_crc5(void *input, size_t length, uint8_t crc5);
-
-/**
-  * @brief  ѕерестановка битов дл€ выделени€ полезных данных в нужном формате
-  * @param  input   -  указатель на входные данные
-  * @param  length  -  длина входных данных
-  * @param  byte    -  какую часть crc5 вернуть, первые 4 бита или последний
-  * @retval crc5_part 	-  возвращаема€ часть crc5
-  */
-uint8_t get_crc5(void *input, size_t length, uint8_t part);
+/**************ѕрототипы************************/
+uint8_t crc5(void *input, uint8_t length);
+bool check_crc5(void *input, uint8_t length, uint8_t crc5);
+uint8_t calculate_crc5(void *input, uint8_t length, uint8_t part);
+/***********************************************/
 #endif

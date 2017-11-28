@@ -29,15 +29,16 @@
   * @param  length  -  длина входных данных
   * @retval crc_reg -  итоговое содержимое регистра, которое и €вл€етс€ значением crc5 
   */
-uint8_t crc5(uint32_t input, size_t length)
+uint8_t crc5(void *input, uint8_t length)
 {
+	uint32_t data = *(uint32_t *)input;
 	size_t i = length;                   // »тератор
  	const uint8_t polynom = POLY;        // »нициализаци€ полинома начальным значением
 	uint8_t crc_reg = INIT_STATE ;       // »нициализаци€ регистра начальным значением
 	
 	while(i--)
 	{
-		if ((crc_reg ^ (input >> (length - POLY))) & 0x10)    // —пецифическа€ проверка старшего бита регистра
+		if ((crc_reg ^ (data >> (length - POLY))) & 0x10)    // —пецифическа€ проверка старшего бита регистра
 		{
 			crc_reg <<= 1;
 			crc_reg ^= polynom;
@@ -45,7 +46,7 @@ uint8_t crc5(uint32_t input, size_t length)
 		else 
 			crc_reg <<= 1;
 		
-		input <<= 1;
+		data <<= 1;
 	}
 
 	crc_reg = (crc_reg & INIT_STATE) ^ INIT_STATE;   // ¬ыделение значащих битов и итоговое инвертирование битов 
@@ -60,11 +61,11 @@ uint8_t crc5(uint32_t input, size_t length)
   * @param  crc5    -  полученное значение crc5 дл€ проверки
   * @retval 0/1 	-  результат проверки, совпало/не совпало
   */
-bool check_crc5(void *input, size_t length, uint8_t taken_crc5)
+bool check_crc5(void *input, uint8_t length, uint8_t taken_crc5)
 {
 	uint8_t calculated_crc5;
 	
-	calculated_crc5 = get_crc5(input, length, 2);
+	calculated_crc5 = calculate_crc5(input, length, 2);
 	
 	if(calculated_crc5 == taken_crc5)
 		return 1;
@@ -76,10 +77,10 @@ bool check_crc5(void *input, size_t length, uint8_t taken_crc5)
   * @brief  ѕерестановка битов дл€ выделени€ полезных данных в нужном формате
   * @param  input   -  указатель на входные данные
   * @param  length  -  длина входных данных
-  * @param  byte    -  какую часть crc5 вернуть, 0 - первые 4 бита, 1 - последний, 2 - crc5 полностью
+  * @param  part    -  какую часть crc5 вернуть, 0 - первые 4 бита, 1 - последний, 2 - crc5 полностью
   * @retval crc 	-  возвращаема€ часть crc5
   */
-uint8_t get_crc5(void *input, size_t length, uint8_t part)
+uint8_t calculate_crc5(void *input, uint8_t length, uint8_t part)
 {
 	uint32_t data = *(uint32_t *)input; //  аст на работу как с обычным числом
 	uint8_t crc;
@@ -94,7 +95,7 @@ uint8_t get_crc5(void *input, size_t length, uint8_t part)
 	
 	data >>= 4; // ¬ыталкивание CRC-битов
 	
-	crc = crc5(data, length);
+	crc = crc5(&data, length);
 	
 	if(part == 0x0)          // ¬озврат первых четырЄх битов
 		return crc >> 1 & 0xF;
