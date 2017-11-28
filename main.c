@@ -15,13 +15,12 @@ void main()
 	DataFCH.pms   = 0x1;  	  // 0b1
 	DataFCH.not2  = 0x1;  	  // 0b1
 	DataFCH.cz    = 0x000000; // 0b000000
-	DataFCH.fccs4 = 0x1; 	  // 0b1
+	DataFCH.fccs4 = 0x0; 	  // 0b1
 	
 	uint8_t check_sum;
 	
-	DataFCH.fccs3 = calculate_crc5(&DataFCH, LENGTH, 0);
- 	DataFCH.fccs4 = calculate_crc5(&DataFCH, LENGTH, 1);
-	check_sum     = (uint8_t)DataFCH.fccs3 << 1 | (uint8_t)DataFCH.fccs4;
+	calculate_crc5(&DataFCH, LENGTH);
+	check_sum = (uint8_t)DataFCH.fccs3 << 1 | (uint8_t)DataFCH.fccs4;
 	
 	printf("fccs3 = %x\n", DataFCH.fccs3);
 	printf("fccs4 = %x\n", DataFCH.fccs4);

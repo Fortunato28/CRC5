@@ -14,7 +14,7 @@
 */
 
 //  Examples (from the USB-standard):
-//      data:    length:     	crc5:
+//      data:     length:     	crc5:
 //      0x547       11          0x17
 //      0x2e5       11          0x1C
 //      0x072       11          0x0E
@@ -65,7 +65,7 @@ bool check_crc5(void *input, uint8_t length, uint8_t taken_crc5)
 {
 	uint8_t calculated_crc5;
 	
-	calculated_crc5 = calculate_crc5(input, length, 2);
+	calculated_crc5 = calculate_crc5(input, length);
 	
 	if(calculated_crc5 == taken_crc5)
 		return 1;
@@ -77,12 +77,12 @@ bool check_crc5(void *input, uint8_t length, uint8_t taken_crc5)
   * @brief  Перестановка битов для выделения полезных данных в нужном формате
   * @param  input   -  указатель на входные данные
   * @param  length  -  длина входных данных
-  * @param  part    -  какую часть crc5 вернуть, 0 - первые 4 бита, 1 - последний, 2 - crc5 полностью
   * @retval crc 	-  возвращаемая часть crc5
   */
-uint8_t calculate_crc5(void *input, uint8_t length, uint8_t part)
+uint8_t calculate_crc5(void *input, uint8_t length)
 {
-	uint32_t data = *(uint32_t *)input; // Каст на работу как с обычным числом
+	uint32_t data = *(uint32_t *)input;     // Каст на работу как с обычным числом
+	uint32_t returned = *(uint32_t *)input; // Для записи вычисленных бит в память
 	uint8_t crc;
 	
 	// Инвертирование байт данных
@@ -95,14 +95,15 @@ uint8_t calculate_crc5(void *input, uint8_t length, uint8_t part)
 	
 	data >>= 4; // Выталкивание CRC-битов
 	
-	crc = crc5(&data, length);
+	crc = crc5(&data, length); // Вычисление CRC
 	
-	if(part == 0x0)          // Возврат первых четырёх битов
-		return crc >> 1 & 0xF;
-	if(part == 0x1)    // Возврат последнего бита
-		return crc & 0x1;
-	else               // Возврат полного числа
-		return crc;
+	returned = returned & 0xF0FFFFFF | crc << 23 & 0x0F000000; // Выделяем нужные 4 бита CRC
+	*(uint32_t *)input = returned;  // Вставляем 4 бита CRC в нужное место в структуре
+	++(uint32_t *)input; 		    // Переход к следующей ячейке памяти
+	returned = crc << 7 & 0x80;     // Выделяем последний бит CRC
+	*(uint32_t *)input |= returned; // Вставляем последний бит CRC в нужное место в структуре
+	
+	return crc;
 }
 
 

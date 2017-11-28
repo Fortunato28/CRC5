@@ -29,6 +29,6 @@ typedef struct {
 /**************Прототипы************************/
 uint8_t crc5(void *input, uint8_t length);
 bool check_crc5(void *input, uint8_t length, uint8_t crc5);
-uint8_t calculate_crc5(void *input, uint8_t length, uint8_t part);
+uint8_t calculate_crc5(void *input, uint8_t length);
 /***********************************************/
 #endif
