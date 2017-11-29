@@ -2,6 +2,7 @@
 #define CRC5
 
 #include <stdint.h>
+#include <stdio.h>
 #include <stdbool.h>
 
 // FCH структура
@@ -27,8 +28,8 @@ typedef struct {
 #define LENGTH 28
 
 /**************Прототипы************************/
-uint8_t crc5(void *input, uint8_t length);
-bool check_crc5(void *input, uint8_t length, uint8_t crc5);
-uint8_t calculate_crc5(void *input, uint8_t length);
+uint8_t crc5(void *input, size_t length);
+bool check_crc5(void *input, size_t length, uint8_t crc5);
+uint8_t calculate_crc5(void *input, size_t length);
 /***********************************************/
 #endif

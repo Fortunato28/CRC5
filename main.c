@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "crc5.h"
 
 void main()

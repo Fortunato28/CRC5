@@ -20,7 +20,6 @@
 //      0x072       11          0x0E
 //      0x400       11          0x17
 #include "crc5.h"
-#include <stdio.h>
 
 
 /**
@@ -29,7 +28,7 @@
   * @param  length  -  длина входных данных
   * @retval crc_reg -  итоговое содержимое регистра, которое и €вл€етс€ значением crc5 
   */
-uint8_t crc5(void *input, uint8_t length)
+uint8_t crc5(void *input, size_t length)
 {
 	uint32_t data = *(uint32_t *)input;
 	size_t i = length;                   // »тератор
@@ -61,7 +60,7 @@ uint8_t crc5(void *input, uint8_t length)
   * @param  crc5    -  полученное значение crc5 дл€ проверки
   * @retval 0/1 	-  результат проверки, совпало/не совпало
   */
-bool check_crc5(void *input, uint8_t length, uint8_t taken_crc5)
+bool check_crc5(void *input, size_t length, uint8_t taken_crc5)
 {
 	uint8_t calculated_crc5;
 	
@@ -79,7 +78,7 @@ bool check_crc5(void *input, uint8_t length, uint8_t taken_crc5)
   * @param  length  -  длина входных данных
   * @retval crc 	-  возвращаема€ часть crc5
   */
-uint8_t calculate_crc5(void *input, uint8_t length)
+uint8_t calculate_crc5(void *input, size_t length)
 {
 	uint32_t data = *(uint32_t *)input;     //  аст на работу как с обычным числом
 	uint32_t returned = *(uint32_t *)input; // ƒл€ записи вычисленных бит в пам€ть
